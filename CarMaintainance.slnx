@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="CarMaintainance.API/CarMaintainance.API.csproj" />
+  <Project Path="CarMaintainance.Application/CarMaintainance.Application.csproj" />
+  <Project Path="CarMaintainance.Infrastructre/CarMaintainance.Infrastructre.csproj" />
+  <Project Path="CarMaintanance.Domain/CarMaintanance.Domain.csproj" />
+</Solution>
