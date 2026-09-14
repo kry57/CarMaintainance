@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CarMaintanance.Domain.Enums
+namespace CarMaintenance.Domain.Enums
 {
     public enum ProviderCategory
     {

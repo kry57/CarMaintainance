@@ -10,6 +10,10 @@ namespace CarMaintainance.API
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddDbContextAndResolverHandMade(builder.Configuration);
+            builder.Services.AddIdentityAndStoresHandMade();
+            builder.Services.AddHttpAccessorHandMade();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 

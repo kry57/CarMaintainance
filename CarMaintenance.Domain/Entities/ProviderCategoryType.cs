@@ -1,11 +1,12 @@
-﻿using CarMaintanance.Domain.Enums;
+﻿
+using CarMaintenance.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CarMaintanance.Domain.Entities
+namespace CarMaintenance.Domain.Entities
 {
-    public class ProviderCategoryType : BaseEntity
+    public class ProviderCategoryType : AuditableEntity
     {
         public int ProviderId { get; set; }
         public Provider Provider { get; set; } = default!; 
