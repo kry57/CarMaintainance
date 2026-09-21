@@ -1,7 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CarMaintainance.API.JWTProvider;
+using CarMaintainance.API.OptionsPattern;
+using CarMaintenance.Application.DTOs;
+using CarMaintenance.Application.Services.Auth;
+using CarMaintenance.Application.Services.Interfaces;
 using CarMaintenance.Infrastructre.Context;
 using CarMaintenance.Infrastructre.Identity;
+using CarMaintenance.Infrastructre.Implementations;
+using CarMaintenance.Infrastructre.Mapping;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 namespace CarMaintainance.API
@@ -20,12 +30,57 @@ namespace CarMaintainance.API
             services.AddIdentity<ApplicationUser, IdentityRole>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.User.RequireUniqueEmail = true;
+            });
             return services;
         }
         public static IServiceCollection AddHttpAccessorHandMade(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddProblemDetails();
             return services;
         }
+        public static IServiceCollection AddResolverForInterfacesHandMade(this IServiceCollection services)
+        {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJWTService, JWTService>();
+            services.AddScoped<IAuthService, AuthService>();
+            
+            return services;
+        }
+        public static IServiceCollection AddAutoMapperHandMade(this IServiceCollection services)
+        {
+            services.AddAutoMapper(cfg => { }, typeof(ApplicaionUserMapped).Assembly);
+            return services;
+        }
+        public static IServiceCollection AddJWTHandMade(this IServiceCollection services,IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection(JWTOptions.SectionName).Get<JWTOptions>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(o =>
+            {
+                o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings!.Key)),
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience
+                };
+            });
+            return services;
+        }
+      
     }
 }

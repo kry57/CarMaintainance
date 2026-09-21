@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
 			<PrivateAssets>all</PrivateAssets>
@@ -18,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CarMaintenance.Domain\CarMaintenance.Domain.csproj" />
+	  <ProjectReference Include="..\CarMaintenance.Application\CarMaintenance.Application.csproj" />
 	</ItemGroup>
 
 </Project>

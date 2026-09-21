@@ -1,4 +1,6 @@
 
+using Scalar.AspNetCore;
+
 namespace CarMaintainance.API
 {
     public class Program
@@ -14,6 +16,10 @@ namespace CarMaintainance.API
             builder.Services.AddDbContextAndResolverHandMade(builder.Configuration);
             builder.Services.AddIdentityAndStoresHandMade();
             builder.Services.AddHttpAccessorHandMade();
+            builder.Services.AddResolverForInterfacesHandMade();
+            builder.Services.AddAutoMapperHandMade();
+            builder.Services.AddJWTHandMade(builder.Configuration);
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -23,6 +29,7 @@ namespace CarMaintainance.API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();

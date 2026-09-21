@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CarMaintainance.Infrastructre.Migrations
+namespace CarMaintenance.Infrastructre.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -247,8 +247,6 @@ namespace CarMaintainance.Infrastructre.Migrations
                 name: "ProviderCategoryTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProviderId = table.Column<int>(type: "int", nullable: false),
                     ProviderCategory = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -258,7 +256,7 @@ namespace CarMaintainance.Infrastructre.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProviderCategoryTypes", x => x.Id);
+                    table.PrimaryKey("PK_ProviderCategoryTypes", x => new { x.ProviderId, x.ProviderCategory });
                     table.ForeignKey(
                         name: "FK_ProviderCategoryTypes_Providers_ProviderId",
                         column: x => x.ProviderId,
@@ -405,11 +403,6 @@ namespace CarMaintainance.Infrastructre.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProviderId",
                 table: "Products",
-                column: "ProviderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProviderCategoryTypes_ProviderId",
-                table: "ProviderCategoryTypes",
                 column: "ProviderId");
 
             migrationBuilder.CreateIndex(

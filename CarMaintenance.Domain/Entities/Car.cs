@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-
-namespace CarMaintenance.Domain.Entities
+﻿namespace CarMaintenance.Domain.Entities
 {
     public class Car : AuditableEntity
     {

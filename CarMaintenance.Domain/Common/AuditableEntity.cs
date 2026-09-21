@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CarMaintenance.Domain.Common
+﻿namespace CarMaintenance.Domain.Common
 {
     public abstract  class AuditableEntity : BaseEntity
     {

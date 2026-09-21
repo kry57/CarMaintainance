@@ -4,7 +4,8 @@
     {
         public void Configure(EntityTypeBuilder<ProviderCategoryType> builder)
         {
-            builder.HasKey(pc => pc.Id);
+            builder.HasKey(pc => new { pc.ProviderId, pc.ProviderCategory });
+            builder.Ignore(pc => pc.Id);
             builder.HasOne(pc => pc.Provider).WithMany(pc => pc.ProviderCategoryTypes).HasForeignKey(pc => pc.ProviderId);
         }
     }

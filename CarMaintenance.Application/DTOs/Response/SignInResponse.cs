@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace CarMaintenance.Application.DTOs.Response
+{
+    public class SignInResponse
+    {
+
+        public string Email { get; set; }
+        public string FullName { get; set; }
+
+
+    }
+}

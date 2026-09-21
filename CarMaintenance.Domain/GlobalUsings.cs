@@ -1,2 +1,3 @@
 ﻿global using CarMaintenance.Domain.Common;
-global using System.Collections.Generic;
+global using CarMaintenance.Domain.Enums;
+
