@@ -11,8 +11,9 @@ namespace CarMaintenance.Infrastructre.Mapping
     {
         public ProviderMapped()
         {
-            CreateMap<ProviderRequest, Provider>();
-            CreateMap<Provider, ProviderResponse>();
+            CreateMap<ProviderRequest, Provider>().ReverseMap();
+            CreateMap<Provider, ProviderRequestStatus>().ReverseMap();
+            CreateMap<Provider, ProviderResponse>().ReverseMap();
         }
     }
 }

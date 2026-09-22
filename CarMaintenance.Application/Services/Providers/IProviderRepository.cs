@@ -17,5 +17,6 @@ namespace CarMaintenance.Application.Services.Providers
         Task<Result<IEnumerable<ProviderResponse>>> GetAllAsync();
         Task<Result<ProviderResponse>> GetByIdAsync(int id);
         Task<Result>  DeleteAsync(int id);
+        Task<Result> ToggleStatus(int id, ProviderRequestStatus ProviderRequestStatus);
     }
 }

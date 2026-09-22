@@ -42,7 +42,7 @@ namespace CarMaintainance.API.Controllers
             var result = await _providerRepository.GetByIdAsync(id);
             return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
         }
-        [HttpDelete("{id:int}/delte")]
+        [HttpDelete("{id:int}/delete")]
         public async Task<IActionResult> Delete([FromRoute] int id )
         {
             var result = await _providerRepository.DeleteAsync(id);
@@ -57,7 +57,15 @@ namespace CarMaintainance.API.Controllers
             return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
             
         }
-        //TODO  : Toggle Status [Active, Verify] , soft delete => isDeleted as a  col in Provider ? 
+
+        [HttpPut("{id:int}/toggle")]
+        public async Task<IActionResult> Toggle([FromRoute] int id, [FromQuery] bool? isActive , [FromQuery]  bool? isVerified, [FromQuery]  bool? isDeleted)
+        {
+            var result = await _providerService.ToggleStatus(id,isActive,isVerified,isDeleted);
+            return result.IsSuccess ? NoContent() : result.ToProblem(400);
+            
+        }
+        
 
 
     }

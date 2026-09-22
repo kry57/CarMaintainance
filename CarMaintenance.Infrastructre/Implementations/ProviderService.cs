@@ -15,19 +15,36 @@ namespace CarMaintenance.Infrastructre.Implementations
         private readonly IMapper _mapper = mapper;
         private readonly ICurrentUserService _currentUser = currentUser;
 
-        //public async Task<Result<ProviderResponse>> AddAsync(ProviderRequest request)
-        //{
-        //    if (request is null)
-        //        return Result<ProviderResponse>.Failure(ProviderError.InvalidData);
+        public async Task<Result> ToggleStatus(
+     int id,
+     bool? isActive,
+     bool? isVerified,
+     bool? isDeleted)
+        {
+            var result = await _unitOfWork.Providers.GetByIdAsync(id);
 
-        //    var provider = _mapper.Map<Provider>(request);
-        //    provider.OwnerId = _currentUser.UserId;   
+            if (result.IsFaliure)
+                return Result.Failure(ProviderError.NotFound);
 
-        //    var result = await _unitOfWork.Providers.AddAsync(provider);
-        //    var response = _mapper.Map<ProviderResponse>(provider);
-        //    return result ? Result<ProviderResponse>.Success(response) : Result<ProviderResponse>.Failure(ProviderError.InvalidData);
-        //}
+            var provider = _mapper.Map<Provider>(result.ValueOuter);
 
-       
+            if (isActive.HasValue)
+                provider.IsActive = isActive.Value;
+
+            if (isVerified.HasValue)
+                provider.IsVerified = isVerified.Value;
+
+            if (isDeleted.HasValue)
+                provider.IsDeleted = isDeleted.Value;
+
+            var request = _mapper.Map<ProviderRequestStatus>(provider);
+
+            var updateResult = await _unitOfWork.Providers.ToggleStatus(id, request);
+
+            if (updateResult.IsFaliure)
+                return Result.Failure(updateResult.Error);
+
+            return Result.Success();
+        }
     }
 }

@@ -11,6 +11,7 @@
         public string PhoneNumber { get; set; } = string.Empty;
         public bool IsVerified { get; set; } = false;
         public bool IsActive { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
         public string OwnerId { get; set; }= string.Empty;
         public ICollection<Product> Products { get; set; } = new List<Product>();
         public ICollection<ProviderCategoryType> ProviderCategoryTypes { get; set; } = new List<ProviderCategoryType>();

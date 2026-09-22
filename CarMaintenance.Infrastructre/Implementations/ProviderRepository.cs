@@ -7,6 +7,7 @@ using CarMaintenance.Application.ErrorProvider.ProviderErrorProvider;
 using CarMaintenance.Application.Services;
 using CarMaintenance.Application.Services.Providers;
 using CarMaintenance.Infrastructre.Context;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 namespace CarMaintenance.Infrastructre.Implementations
 {
@@ -45,6 +46,9 @@ namespace CarMaintenance.Infrastructre.Implementations
 
         public async Task<Result> DeleteAsync(int id)
         {
+            var provider = await _context.Providers.SingleOrDefaultAsync(p => p.Id == id);
+            if (provider!.IsDeleted)
+                return Result<ProviderResponse>.Failure(ProviderError.NotFound);
             var affectedRows = await _context.Providers
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync();
@@ -58,7 +62,7 @@ namespace CarMaintenance.Infrastructre.Implementations
         public async Task<Result<IEnumerable<ProviderResponse>>> GetAllActivatedVerifiedAsync()
         {
             var providers = await _context.Providers
-                .Where(p => p.IsActive && p.IsVerified)
+                .Where(p => p.IsActive && p.IsVerified && (p.IsDeleted == false))
                 .ProjectTo<ProviderResponse>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
@@ -78,6 +82,8 @@ namespace CarMaintenance.Infrastructre.Implementations
             var isUserIdExsited = await _context.Providers.FindAsync(id);
             if (isUserIdExsited is null)
                 return Result<ProviderResponse>.Failure(ProviderError.NotFound);
+            if (isUserIdExsited.IsDeleted)
+                return Result<ProviderResponse>.Failure(ProviderError.NotFound);
             var response  = _mapper.Map<ProviderResponse>(isUserIdExsited);
             return Result<ProviderResponse>.Success(response);
         }
@@ -89,7 +95,10 @@ namespace CarMaintenance.Infrastructre.Implementations
                 return Result<ProviderResponse>.Failure(ProviderError.DuplicatedProvider);
 
             var provider = await _context.Providers.SingleOrDefaultAsync(p => p.Id == id);
+
             if (provider is null)
+                return Result<ProviderResponse>.Failure(ProviderError.NotFound);
+            if(provider.IsDeleted)
                 return Result<ProviderResponse>.Failure(ProviderError.NotFound);
 
             _mapper.Map(request, provider);
@@ -100,6 +109,16 @@ namespace CarMaintenance.Infrastructre.Implementations
 
             var response = _mapper.Map<ProviderResponse>(provider);
             return Result<ProviderResponse>.Success(response);
+        }
+        public async Task<Result> ToggleStatus(int id, ProviderRequestStatus ProviderRequestStatus)
+        {
+            var provider = await _context.Providers.FindAsync(id);
+            _mapper.Map(ProviderRequestStatus, provider);
+
+            var affectedRows = await _context.SaveChangesAsync();
+            if (affectedRows <= 0)
+                return Result.Failure(ProviderError.InvalidData);
+            return Result.Success();
         }
     }
 }

@@ -77,10 +77,15 @@ namespace CarMaintainance.API
 
             return services;
         }
-        public static IServiceCollection AddAutoMapperHandMade(this IServiceCollection services)
+        public static IServiceCollection AddAutoMapperHandMade(
+      this IServiceCollection services)
         {
-            services.AddAutoMapper(cfg => { }, typeof(ApplicaionUserMapped).Assembly);
-            services.AddAutoMapper(cfg => { }, typeof(ProviderMapped).Assembly);
+            services.AddAutoMapper(
+                cfg => { },
+                typeof(ApplicaionUserMapped).Assembly,
+                typeof(ProviderMapped).Assembly
+            );
+
             return services;
         }
         public static IServiceCollection AddJWTHandMade(this IServiceCollection services,IConfiguration configuration)
