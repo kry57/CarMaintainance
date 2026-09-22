@@ -15,10 +15,27 @@ namespace CarMaintenance.Infrastructre.Mapping
             {
 
             CreateMap<RegisterRequest, ApplicationUser>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
-            CreateMap<ApplicationUser, RegisterResponse>();
-            CreateMap<ApplicationUser, SignInResponse>();
+            CreateMap<(ApplicationUser User, string Token, int ExpiresIn), RegisterResponse>()
+                .ConstructUsing(src => new RegisterResponse
+                {
+                    Id = src.User.Id,
+                    Email = src.User.Email!,
+                    FullName = src.User.FullName,
+                    token = src.Token,
+                    ExpiresIn = src.ExpiresIn
+                    
+                });
+            CreateMap<(ApplicationUser User, string Token, int ExpiresIn), SignInResponse>().ConstructUsing(src => new SignInResponse
+            {
+                
+                Email = src.User.Email!,
+                FullName = src.User.FullName,
+                token = src.Token,
+                ExpiresIn = src.ExpiresIn
 
-            }
+            });
+
+        }
         
     }
 }

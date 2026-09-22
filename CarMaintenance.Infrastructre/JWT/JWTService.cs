@@ -1,12 +1,12 @@
-﻿using CarMaintainance.API.OptionsPattern;
-using CarMaintenance.Infrastructre.Identity;
+﻿using CarMaintenance.Infrastructre.Identity;
+using CarMaintenance.Infrastructre.JWT;
+using CarMaintenance.Infrastructre.OptionsPattern;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 
-namespace CarMaintainance.API.JWTProvider
+namespace CarMaintenance.Infrastructre.JWT
 {
     public class JWTService(IOptions<JWTOptions> option) : IJWTService
     {

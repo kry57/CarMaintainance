@@ -1,4 +1,4 @@
-﻿namespace CarMaintainance.API.OptionsPattern
+﻿namespace CarMaintenance.Infrastructre.OptionsPattern
 {
     public  class JWTOptions
     { 

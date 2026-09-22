@@ -1,6 +1,6 @@
 ﻿using CarMaintenance.Infrastructre.Identity;
 
-namespace CarMaintainance.API.JWTProvider
+namespace CarMaintenance.Infrastructre.JWT
 {
     public interface IJWTService
     {

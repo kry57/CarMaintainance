@@ -1,9 +1,15 @@
-﻿using CarMaintenance.Application.Services.Implementations;
+﻿using AutoMapper;
+using CarMaintenance.Application.Services;
+using CarMaintenance.Application.Services.Cars;
 using CarMaintenance.Application.Services.Interfaces;
+using CarMaintenance.Application.Services.Products;
+using CarMaintenance.Application.Services.ProviderCategoriesTypes;
+using CarMaintenance.Application.Services.Providers;
+using CarMaintenance.Application.Services.RegistrationsRequests;
+using CarMaintenance.Application.Services.Reviews;
+using CarMaintenance.Application.Services.Subscriptions;
 using CarMaintenance.Infrastructre.Context;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CarMaintenance.Infrastructre.Implementations;
 
 namespace CarMaintenance.Infrastructre.Implementations
 {
@@ -11,31 +17,25 @@ namespace CarMaintenance.Infrastructre.Implementations
     {
         private readonly ApplicationDbContext _context;
 
-        public IGenericReposatory<Provider> Providers {get;}
+        public IProviderRepository Providers { get; }
+        public IProductRepository Products { get; }
+        public ICarsRepository Cars { get; }
+        public ISubscriptionsRepository Subscriptions { get; }
+        public IRegistrationRequestsRepository RegistrationRequests { get; }
+        public IReviewRepository Reviews { get; }
+        public IProviderCategoryTypesRepository ProviderCategoryTypes { get; }
 
-        public IGenericReposatory<Product> Products {get;}
-
-        public IGenericReposatory<Car> Cars {get;}
-
-        public IGenericReposatory<Subscription> Subscriptions {get;}
-
-        public IGenericReposatory<RegistrationRequest> RegistrationRequests {get;}
-
-        public IGenericReposatory<Review> Reviews {get;}
-
-        public IGenericReposatory<ProviderCategoryType> ProviderCategoryTypes {get;}
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService)
         {
             _context = context;
-            Providers = new GenericRepoastory<Provider>(context);
-            Products = new GenericRepoastory<Product>(context);
-            Cars = new GenericRepoastory<Car>(context);
-            Subscriptions = new GenericRepoastory<Subscription>(context);
-            RegistrationRequests = new GenericRepoastory<RegistrationRequest>(context);
-            Reviews = new GenericRepoastory<Review>(context);
-            ProviderCategoryTypes = new GenericRepoastory<ProviderCategoryType>(context);
-        }
 
-       
+            Providers = new ProviderRepository(context, mapper, currentUserService);
+            Products = new ProductRepository(context, mapper, currentUserService);
+            Cars = new CarRepository(context, mapper, currentUserService);
+            Subscriptions = new SubscriptionRepository(context, mapper, currentUserService);
+            RegistrationRequests = new RegistrationsRequestsRepository(context, mapper, currentUserService);
+            Reviews = new ReviewRepository(context, mapper, currentUserService);
+            ProviderCategoryTypes = new ProviderCategoryRepository(context, mapper, currentUserService);
+        }
     }
 }
