@@ -8,6 +8,7 @@ namespace CarMaintenance.Application.DTOs.Response
     public class ProviderResponse
     {
         public  int Id { get; set; } 
+        public  string OwnerId { get; set; } 
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
 

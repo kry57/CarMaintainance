@@ -1,10 +1,4 @@
-﻿using CarMaintainance.API.JWTProvider;
-using CarMaintenance.Application.DTOs.Request;
-using CarMaintenance.Application.Services.Providers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace CarMaintainance.API.Controllers
+﻿namespace CarMaintainance.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -36,10 +30,29 @@ namespace CarMaintainance.API.Controllers
             var result = await _providerRepository.GetAllAsync();
             return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
         }
+
+        [HttpGet("nearby")]
+        public async Task<IActionResult> GetNearbyPoint([FromQuery] double lat,[FromQuery] double lng,[FromQuery] double radiusKm,[FromQuery] ProviderCategory? category)
+        {
+            var result = await _providerService.GetNearbyProviders(lat, lng, radiusKm, category);
+            return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
+        }
         [HttpGet("{id:int}/get-by-id")]
         public async Task<IActionResult> GetById([FromRoute] int id )
         {
             var result = await _providerRepository.GetByIdAsync(id);
+            return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
+        }
+        [HttpGet("{id}/get-prividersAssigned-to-owner")]
+        public async Task<IActionResult> GetProvidersByOwner([FromRoute] string id )
+        {
+            var result = await _providerService.GetProvidersByOwner(id);
+            return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
+        }
+        [HttpGet("get-grouped-provider-with-owner")]
+        public async Task<IActionResult> GetProvidersGroupedByOwner()
+        {
+            var result = await _providerService.GetProvidersGroupedByOwner();
             return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
         }
         [HttpDelete("{id:int}/delete")]

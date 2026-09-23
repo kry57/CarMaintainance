@@ -1,28 +1,4 @@
-﻿using CarMaintainance.API.JWTProvider;
-using CarMaintenance.Application.Services;
-using CarMaintenance.Application.Services.Auth;
-using CarMaintenance.Application.Services.Cars;
-using CarMaintenance.Application.Services.Interfaces;
-using CarMaintenance.Application.Services.Products;
-using CarMaintenance.Application.Services.ProviderCategoriesTypes;
-using CarMaintenance.Application.Services.Providers;
-using CarMaintenance.Application.Services.RegistrationsRequests;
-using CarMaintenance.Application.Services.Reviews;
-using CarMaintenance.Application.Services.Subscriptions;
-using CarMaintenance.Infrastructre.Context;
-using CarMaintenance.Infrastructre.Identity;
-using CarMaintenance.Infrastructre.Implementations;
-using CarMaintenance.Infrastructre.JWT;
-using CarMaintenance.Infrastructre.Mapping;
-using CarMaintenance.Infrastructre.OptionsPattern;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-
-namespace CarMaintainance.API
+﻿namespace CarMaintainance.API
 {
     public static class DepedencyInjection
     {
@@ -50,6 +26,33 @@ namespace CarMaintainance.API
         {
             services.AddHttpContextAccessor();
             services.AddProblemDetails();
+            return services;
+        }
+        public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Car Maintenance Platform API",
+                    Description = "A multi-tenant SaaS API for a provider-based car maintenance marketplace, enabling customers to search for garages and spare-part sellers, manage their vehicles, and handle service requests",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Khaled Yasser",
+                        Url = new Uri("https://github.com/kry57/CarMaintainance")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://opensource.org/licenses/MIT")
+                    }
+                });
+
+                options.IncludeXmlComments(
+                    Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+            });
             return services;
         }
         public static IServiceCollection AddResolverForInterfacesHandMade(this IServiceCollection services)
