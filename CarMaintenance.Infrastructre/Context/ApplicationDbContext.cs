@@ -56,6 +56,7 @@ namespace CarMaintenance.Infrastructre.Context
         public DbSet<ProviderCategoryType> ProviderCategoryTypes { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<RegistrationRequest> RegistrationRequests { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Review> Reviews { get; set; }

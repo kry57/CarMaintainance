@@ -1,4 +1,6 @@
-﻿namespace CarMaintainance.API
+﻿using CarMaintenance.Domain.Entities;
+
+namespace CarMaintainance.API
 {
     public static class DepedencyInjection
     {
@@ -68,6 +70,7 @@
             services.AddScoped<IRegistrationRequestsRepository, RegistrationsRequestsRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IProviderCategoryTypesRepository, ProviderCategoryRepository>();
+            services.AddScoped<IImageService, ImageService>();
 
             // Services
             services.AddScoped<IProviderService, ProviderService>();
@@ -86,7 +89,8 @@
             services.AddAutoMapper(
                 cfg => { },
                 typeof(ApplicaionUserMapped).Assembly,
-                typeof(ProviderMapped).Assembly
+                typeof(ProviderMapped).Assembly,
+                typeof(ProductMapped).Assembly
             );
 
             return services;
@@ -94,6 +98,7 @@
         public static IServiceCollection AddJWTHandMade(this IServiceCollection services,IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection(JWTOptions.SectionName).Get<JWTOptions>();
+            services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SectionName));
             services.Configure<JWTOptions>(configuration.GetSection(JWTOptions.SectionName));
             services.AddAuthentication(options =>
             {

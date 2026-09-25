@@ -25,12 +25,12 @@ namespace CarMaintenance.Infrastructre.Implementations
         public IReviewRepository Reviews { get; }
         public IProviderCategoryTypesRepository ProviderCategoryTypes { get; }
 
-        public UnitOfWork(ApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService)
+        public UnitOfWork(ApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService, IImageService imageService)
         {
             _context = context;
 
             Providers = new ProviderRepository(context, mapper, currentUserService);
-            Products = new ProductRepository(context, mapper, currentUserService);
+            Products = new ProductRepository(context, mapper, currentUserService, imageService);
             Cars = new CarRepository(context, mapper, currentUserService);
             Subscriptions = new SubscriptionRepository(context, mapper, currentUserService);
             RegistrationRequests = new RegistrationsRequestsRepository(context, mapper, currentUserService);

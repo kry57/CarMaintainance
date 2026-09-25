@@ -1,5 +1,7 @@
 
 using Scalar.AspNetCore;
+using System.Text.Json.Serialization;
+
 
 namespace CarMaintainance.API
 {
@@ -24,6 +26,15 @@ namespace CarMaintainance.API
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerDocumentation();
+            
+
+            builder.Services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(
+                        new JsonStringEnumConverter());
+                });
 
             var app = builder.Build();
 
