@@ -9,5 +9,7 @@
         public DateTime EndAt { get; set; } 
         public SubscriptionStatus SubscriptionStatus { get; set; }
 
+        public string? PendingPlanName { get; set; }
+
     }
 }

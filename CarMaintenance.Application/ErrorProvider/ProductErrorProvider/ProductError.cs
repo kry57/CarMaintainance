@@ -8,6 +8,7 @@ namespace CarMaintenance.Application.ErrorProvider.ProductErrorProvider
         public static Error NotAdded => new("Product.NotAdded", "There is an invalid thing in save to DB !");
         public static Error NotDeleted => new("Product.NotDeleted", "There is an operation to delete !");
         public static Error NotFound => new("Product.NotFound", "There is no by this id and provider id  ");
+        public static Error NotFoundImage => new("Product.NotFoundImage", "There is no image by this values ! ");
         public static Error NotUpdated => new("Product.NotUpdated", "invalid to update !");
         public static readonly Error Duplicated= new("Product.Duplicated", "You already have a product  with this name and partType");
 

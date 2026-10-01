@@ -1,4 +1,5 @@
 ﻿using CarMaintenance.Domain.Entities;
+using Hangfire;
 
 namespace CarMaintainance.API
 {
@@ -27,7 +28,9 @@ namespace CarMaintainance.API
         public static IServiceCollection AddHttpAccessorHandMade(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
+            
             return services;
         }
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
@@ -71,6 +74,7 @@ namespace CarMaintainance.API
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IProviderCategoryTypesRepository, ProviderCategoryRepository>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<ISubscriptionExpiryJob, SubscriptionExpiryJob>();
 
             // Services
             services.AddScoped<IProviderService, ProviderService>();
@@ -90,8 +94,26 @@ namespace CarMaintainance.API
                 cfg => { },
                 typeof(ApplicaionUserMapped).Assembly,
                 typeof(ProviderMapped).Assembly,
-                typeof(ProductMapped).Assembly
+                typeof(ProductMapped).Assembly,
+                typeof(CarMapped).Assembly,
+                typeof(SubscriptionMapped).Assembly
+
             );
+
+            return services;
+        }
+        public static IServiceCollection AddHangFireHandMade(
+      this IServiceCollection services , IConfiguration configuration)
+        {
+           
+
+            services.AddHangfire(config => config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+            services.AddHangfireServer();
 
             return services;
         }

@@ -20,5 +20,7 @@ namespace CarMaintenance.Application.Services.Products
         Task<Result<ProductResonse>> UpdateStockAsync( int providerId,int productId,int quantity);
         Task<Result<ProductImageResponse>> AddImageAsync( int providerId,int productId,ProductImageRequest request);
         Task<Result> DeleteImageAsync(int providerId, int productId, int imageId);
+        Task<Result<IEnumerable<ProductImageResponse>>> GetImages(int providerId ,  int productId);
+        Task<Result<ProductImageResponse>> GetImageById(int providerId ,  int productId, int imageid);
     }
 }

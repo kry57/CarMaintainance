@@ -1,4 +1,5 @@
 
+using Hangfire;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 
@@ -21,6 +22,7 @@ namespace CarMaintainance.API
             builder.Services.AddResolverForInterfacesHandMade();
             builder.Services.AddAutoMapperHandMade();
             builder.Services.AddJWTHandMade(builder.Configuration);
+            builder.Services.AddHangFireHandMade(builder.Configuration);
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -37,6 +39,8 @@ namespace CarMaintainance.API
                 });
 
             var app = builder.Build();
+            app.Services.GetRequiredService<IRecurringJobManager>().AddOrUpdate<ISubscriptionExpiryJob>( "expire-subscriptions", job => job.ExpireSubscriptionsAsync(), Cron.Minutely);
+            app.UseHangfireDashboard("/hangfire");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -46,7 +50,13 @@ namespace CarMaintainance.API
                 app.MapSwagger();
                 app.MapSwaggerUI();
                 app.MapScalarApiReference();
+                app.UseHangfireDashboard("/hangfire", new DashboardOptions
+                {
+                    DashboardTitle = "Car Maintenance Jobs"
+                });
             }
+
+            app.UseExceptionHandler();
 
             app.UseHttpsRedirection();
 
@@ -54,6 +64,7 @@ namespace CarMaintainance.API
 
 
             app.MapControllers();
+
 
             app.Run();
         }

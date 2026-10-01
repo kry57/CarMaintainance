@@ -8,6 +8,7 @@ using CarMaintenance.Application.Services;
 using CarMaintenance.Application.Services.Products;
 using CarMaintenance.Infrastructre.Context;
 using Microsoft.CodeAnalysis;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace CarMaintenance.Infrastructre.Implementations
@@ -125,8 +126,7 @@ namespace CarMaintenance.Infrastructre.Implementations
             if (image is null)
                 return Result.Failure(ProductError.NotFound);
 
-            var deletedFromCloudinary =
-     await _imageService.DeleteImage(image.PublicId);
+            var deletedFromCloudinary =  await _imageService.DeleteImage(image.PublicId);
 
             if (!deletedFromCloudinary)
                 return Result.Failure(ProductError.NotDeleted);
@@ -194,6 +194,45 @@ namespace CarMaintenance.Infrastructre.Implementations
             var response = _mapper.Map<ProductResonse>(product);
 
             return Result<ProductResonse>.Success(response);
+        }
+
+        public async Task<Result<IEnumerable<ProductImageResponse>>> GetImages(int providerId, int productId)
+        {
+            var provider = await _context.Providers.FindAsync(providerId);
+            if(provider is null || provider.IsDeleted)
+                return Result<IEnumerable<ProductImageResponse>>.Failure(ProductError.NotAssignedToPvovider);
+
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProviderId == providerId && p.Id == productId);
+
+            if (product is null || product.IsDeleted)
+                return Result<IEnumerable<ProductImageResponse>>.Failure(ProductError.NotFound);
+            var images = await _context.ProductImages.Where(i => i.ProductId == productId).OrderBy(i => i.IsPrimary).ToListAsync();
+
+            var response = _mapper.Map<IEnumerable<ProductImageResponse>>(images);
+
+            return Result<IEnumerable<ProductImageResponse>>.Success(response);
+
+
+        }
+
+        public async Task<Result<ProductImageResponse>> GetImageById(int providerId, int productId, int imageid)
+        {
+            var provider = await _context.Providers.FindAsync(providerId);
+            if (provider is null || provider.IsDeleted)
+                return Result<ProductImageResponse>.Failure(ProductError.NotAssignedToPvovider);
+
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProviderId == providerId && p.Id == productId);
+
+            if (product is null || product.IsDeleted)
+                return Result<ProductImageResponse>.Failure(ProductError.NotFound);
+            var image = await _context.ProductImages.FirstOrDefaultAsync(i => i.ProductId == productId && i.Id == imageid);
+            if (image is null)
+                return Result<ProductImageResponse>.Failure(ProductError.NotFoundImage);
+
+            var response = _mapper.Map<ProductImageResponse>(image);
+
+            return Result<ProductImageResponse>.Success(response);
+
         }
 
         public async Task<Result> ToggleStatus(int providerId, int id)

@@ -4,6 +4,7 @@ using CarMaintenance.Infrastructre.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarMaintenance.Infrastructre.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260927091610_AddIsDeletedToReview")]
+    partial class AddIsDeletedToReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +42,6 @@ namespace CarMaintenance.Infrastructre.Migrations
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Make")
                         .IsRequired()
@@ -373,9 +373,6 @@ namespace CarMaintenance.Infrastructre.Migrations
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PendingPlanName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PlanName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -398,9 +395,7 @@ namespace CarMaintenance.Infrastructre.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProviderId")
-                        .IsUnique()
-                        .HasFilter("[SubscriptionStatus] = 0");
+                    b.HasIndex("ProviderId");
 
                     b.ToTable("Subscriptions");
                 });

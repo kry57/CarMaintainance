@@ -1,11 +1,14 @@
-﻿namespace CarMaintenance.Domain.Entities
+﻿using CarMaintenance.Domain.Entities;
+
+namespace CarMaintenance.Application.DTOs.Response
 {
-    public class Review : AuditableEntity
+    public class ReviewResponse
     {
+        public int Id { get; set; }
         public string CustomerId { get; set; } = string.Empty;
 
         public int ProviderId { get; set; }
-        public Provider Provider { get; set; } = default!;
+        
 
         public int Rating { get; set; }
 

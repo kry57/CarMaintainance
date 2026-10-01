@@ -1,4 +1,6 @@
-﻿namespace CarMaintenance.Infrastructre.Configuration
+﻿using CarMaintenance.Domain.Enums;
+
+namespace CarMaintenance.Infrastructre.Configuration
 {
     public class SubscriptionEntityType : IEntityTypeConfiguration<Subscription>
     {
@@ -7,6 +9,7 @@
             builder.HasKey(s => s.Id);
             builder.Property(s => s.PlanName).IsRequired().HasMaxLength(50);
             builder.HasOne(s => s.Provider).WithMany(s => s.Subscriptions).HasForeignKey(s => s.ProviderId);
+            builder.HasIndex(s => s.ProviderId).HasFilter($"[SubscriptionStatus] = {(int)SubscriptionStatus.Active}").IsUnique();
         }
     }
 }

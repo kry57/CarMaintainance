@@ -68,6 +68,24 @@ namespace CarMaintainance.API.Controllers
 
             return result.IsSuccess ?   Ok(result.ValueOuter) : result.ToProblem(400);
         }
+        [HttpGet("{providerId}/images/{id:int}")]
+        public async Task<IActionResult> GetImages([FromRoute] int providerId, [FromRoute] int id)
+        {
+            var result =await _unitOfWork.Products.GetImages(providerId,id);
+
+            return result.IsSuccess ?   Ok(result.ValueOuter) : result.ToProblem(400);
+        }
+        [HttpGet("{providerId}/images/{id:int}/{imageid:int}")]
+        public async Task<IActionResult> GetImages([FromRoute] int providerId, [FromRoute] int id , [FromRoute] int imageid)
+        {
+            var result = await _unitOfWork.Products
+       .GetImageById(providerId, id, imageid);
+
+            if (!result.IsSuccess)
+                return result.ToProblem(400);
+
+            return Ok(result.ValueOuter);
+        }
         [HttpDelete("{providerId}/delete/{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int providerId, [FromRoute] int id)
         {

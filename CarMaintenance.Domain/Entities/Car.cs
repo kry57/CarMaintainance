@@ -7,5 +7,6 @@
         public string Model { get; set; } = string.Empty;
         public int Year { get; set; }
         public string PlateNumber { get; set; } = string.Empty;
+        public bool IsDelete { get; set; } = false; 
     }
 }
