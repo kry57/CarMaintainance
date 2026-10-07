@@ -1,5 +1,4 @@
 ﻿using CarMaintenance.Infrastructre.Identity;
-using CarMaintenance.Infrastructre.JWT;
 using CarMaintenance.Infrastructre.OptionsPattern;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -40,13 +39,35 @@ namespace CarMaintenance.Infrastructre.JWT
                 
         }
 
-        //public string? ValidateToken(string token)
-        //{
-        //    var handler = new JwtSecurityTokenHandler();
-        //    handler.ValidateToken{
-        //        IssuerValidator  = 
-        //    }
+        public string? ValidateToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var symmSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_option.Value.Key));
+            try
+            {
+                handler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true ,
+                    IssuerSigningKey = symmSecurityKey ,
 
-        //}
+                    ValidateAudience = false , 
+                    ValidateIssuer = false , 
+
+                    ValidateLifetime = false, 
+                    ClockSkew = TimeSpan.Zero
+
+
+                }, out SecurityToken validatedToken);
+
+                var jwtSecurityToken = (JwtSecurityToken)validatedToken;
+                return jwtSecurityToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+            }
+            catch (SecurityTokenException ) {
+                return null;
+
+            }
+
+        }
     }
 }

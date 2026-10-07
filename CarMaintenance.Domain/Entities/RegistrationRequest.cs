@@ -8,5 +8,7 @@
         public Provider Provider { get; set; } = default!;
         public RequestStatus RequestStatus { get; set; }
         public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
+        public DateTime AppointmentTime { get; set; }
+        public string? RejectionReason { get; set; }
     }
 }

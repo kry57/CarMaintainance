@@ -1,6 +1,8 @@
 
+using CarMaintainance.API.Helpers;
 using Hangfire;
 using Scalar.AspNetCore;
+using Serilog;
 using System.Text.Json.Serialization;
 
 
@@ -23,6 +25,7 @@ namespace CarMaintainance.API
             builder.Services.AddAutoMapperHandMade();
             builder.Services.AddJWTHandMade(builder.Configuration);
             builder.Services.AddHangFireHandMade(builder.Configuration);
+            builder.Services.AddScalarHandMade();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -37,24 +40,42 @@ namespace CarMaintainance.API
                     options.JsonSerializerOptions.Converters.Add(
                         new JsonStringEnumConverter());
                 });
+     //Serilog 
+     builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext());
 
             var app = builder.Build();
             app.Services.GetRequiredService<IRecurringJobManager>().AddOrUpdate<ISubscriptionExpiryJob>( "expire-subscriptions", job => job.ExpireSubscriptionsAsync(), Cron.Minutely);
-            app.UseHangfireDashboard("/hangfire");
+           app.Services.GetRequiredService<IRecurringJobManager>().AddOrUpdate<RegistrationRequestProcessor>( "process-pending-requests",x => x.ProcessAllPendingAsync(),Cron.Minutely);
+           app.UseHangfireDashboard("/hangfire");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
 
-                app.MapOpenApi();
+                
                 app.MapSwagger();
                 app.MapSwaggerUI();
-                app.MapScalarApiReference();
+                app.MapOpenApi();
+
+                app.MapScalarApiReference(options =>
+                {
+                    options
+                        .WithTitle("Car Maintenance API")
+                        .WithHttpBearerAuthentication(
+                            bearer =>
+                            {
+                                bearer.Token = "PUT_YOUR_TOKEN_HERE";
+                            });
+                });
                 app.UseHangfireDashboard("/hangfire", new DashboardOptions
                 {
                     DashboardTitle = "Car Maintenance Jobs"
                 });
             }
+            app.UseSerilogRequestLogging();
 
             app.UseExceptionHandler();
 

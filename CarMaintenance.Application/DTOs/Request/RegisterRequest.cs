@@ -1,8 +1,5 @@
 ﻿using CarMaintenance.Domain.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace CarMaintenance.Application.DTOs.Request
 {
@@ -14,7 +11,7 @@ namespace CarMaintenance.Application.DTOs.Request
         public string FullName { get; set; }
         public UserRole UserRole = UserRole.Customer;
         [Required]
-        [DataType(DataType.Password)] 
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

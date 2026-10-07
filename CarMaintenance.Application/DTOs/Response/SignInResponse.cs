@@ -12,6 +12,8 @@ namespace CarMaintenance.Application.DTOs.Response
         public string FullName { get; set; }
         public string token { get; set; }
         public int ExpiresIn { get; set; }
+        public string refreshToken { get; set; }
+        public DateTime RefreshTokenExpiryDays { get; set; }
 
 
     }

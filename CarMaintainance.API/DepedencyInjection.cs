@@ -1,5 +1,9 @@
-﻿using CarMaintenance.Domain.Entities;
+﻿using CarMaintainance.API.Helpers;
+using CarMaintenance.Domain.Entities;
 using Hangfire;
+using Microsoft.OpenApi;
+using Scalar.AspNetCore;
+
 
 namespace CarMaintainance.API
 {
@@ -20,7 +24,7 @@ namespace CarMaintainance.API
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
-                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedEmail = true;
                 options.User.RequireUniqueEmail = true;
             });
             return services;
@@ -31,6 +35,33 @@ namespace CarMaintainance.API
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
             
+            return services;
+        }
+        public static IServiceCollection AddScalarHandMade(this IServiceCollection services)
+        {
+           
+
+            services.AddOpenApi(options =>
+            {
+                options.AddDocumentTransformer((document, context, cancellationToken) =>
+                {
+                    document.Components ??= new();
+
+                    document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+                    document.Components.SecuritySchemes["Bearer"] =
+                        new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "bearer",
+                            BearerFormat = "JWT",
+                            In = ParameterLocation.Header,
+                            Name = "Authorization"
+                        };
+
+                    return Task.CompletedTask;
+                });
+            });
             return services;
         }
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
@@ -80,6 +111,7 @@ namespace CarMaintainance.API
             services.AddScoped<IProviderService, ProviderService>();
             services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             // HTTP context / current user
             services.AddHttpContextAccessor();
@@ -96,24 +128,26 @@ namespace CarMaintainance.API
                 typeof(ProviderMapped).Assembly,
                 typeof(ProductMapped).Assembly,
                 typeof(CarMapped).Assembly,
-                typeof(SubscriptionMapped).Assembly
+                typeof(SubscriptionMapped).Assembly,
+                typeof(RegisterRequestMapped).Assembly
 
             );
 
             return services;
         }
         public static IServiceCollection AddHangFireHandMade(
-      this IServiceCollection services , IConfiguration configuration)
+       this IServiceCollection services, IConfiguration configuration)
         {
-           
-
             services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
                 .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
 
-            services.AddHangfireServer();
+            
+            services.AddHangfireServer(options => options.WorkerCount = 1);
+
+            services.AddScoped<RegistrationRequestProcessor>();
 
             return services;
         }
@@ -122,6 +156,7 @@ namespace CarMaintainance.API
             var jwtSettings = configuration.GetSection(JWTOptions.SectionName).Get<JWTOptions>();
             services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SectionName));
             services.Configure<JWTOptions>(configuration.GetSection(JWTOptions.SectionName));
+            services.Configure<MailSettings>(configuration.GetSection(JWTOptions.SectionName));
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

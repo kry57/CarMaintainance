@@ -1,4 +1,5 @@
 ﻿using CarMaintenance.Domain.Enums;
+using CarMaintenance.Infrastructre.JWT;
 using Microsoft.AspNetCore.Identity;
 
 namespace CarMaintenance.Infrastructre.Identity
@@ -11,5 +12,6 @@ namespace CarMaintenance.Infrastructre.Identity
         public ICollection<Car> Cars{ get; set; } = [];
         public ICollection<Review> Reviews { get; set; } = [];
         public ICollection<RegistrationRequest> Registrations { get; set; } = [];
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
     }
 }

@@ -1,9 +1,7 @@
 ﻿using CarMaintenance.Application.Abstractions;
 using CarMaintenance.Application.DTOs.Request;
 using CarMaintenance.Application.DTOs.Response;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace CarMaintenance.Application.Services.Auth
 {
@@ -11,5 +9,9 @@ namespace CarMaintenance.Application.Services.Auth
     {
         Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request);
         Task<Result<SignInResponse>> LogInAsync(SignInRequest request);
+        Task<Result<SignInResponse>> GenerateRefreshToken(string token , string refreshToken);
+        Task<Result> GetRevoked(string token , string refreshToken);
+        Task<Result> ConfirmEmail(string UserId, string Code);
+
     }
 }

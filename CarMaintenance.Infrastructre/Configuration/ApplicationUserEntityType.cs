@@ -12,6 +12,8 @@ namespace CarMaintenance.Infrastructre.Configuration
             builder.HasMany(u => u.Cars).WithOne().HasForeignKey(p => p.CustomerId);
             builder.HasMany(u => u.Reviews).WithOne().HasForeignKey(p => p.CustomerId);
             builder.HasMany(u => u.Registrations).WithOne().HasForeignKey(p => p.CustomerId);
+            //
+            builder.OwnsMany(u => u.RefreshTokens).ToTable("RefreshTokens").WithOwner().HasForeignKey("UserId");
         }
     }
 }

@@ -6,6 +6,7 @@
         {
             builder.HasKey(rq => rq.Id);
             builder.Property(re => re.CustomerId).IsRequired();
+            builder.Property(r => r.RejectionReason).HasMaxLength(200);
             builder.HasOne(re => re.Provider).WithMany(p => p.RegistrationRequests).HasForeignKey(re => re.ProviderId);
         }
     }

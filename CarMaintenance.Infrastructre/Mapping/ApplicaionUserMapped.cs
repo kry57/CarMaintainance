@@ -25,13 +25,15 @@ namespace CarMaintenance.Infrastructre.Mapping
                     ExpiresIn = src.ExpiresIn
                     
                 });
-            CreateMap<(ApplicationUser User, string Token, int ExpiresIn), SignInResponse>().ConstructUsing(src => new SignInResponse
+            CreateMap<(ApplicationUser User, string Token, int ExpiresIn,string refreshToken , DateTime RefreshTokenExpiryDays), SignInResponse>().ConstructUsing(src => new SignInResponse
             {
                 
                 Email = src.User.Email!,
                 FullName = src.User.FullName,
                 token = src.Token,
-                ExpiresIn = src.ExpiresIn
+                ExpiresIn = src.ExpiresIn,
+                refreshToken = src.refreshToken,
+                RefreshTokenExpiryDays = src.RefreshTokenExpiryDays
 
             });
 

@@ -43,5 +43,23 @@ namespace CarMaintainance.API.Controllers
             var result = await _authService.LogInAsync(request);
             return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
         }
+        [HttpPost("generate-refresh-token")]
+        public async Task<IActionResult> GenerateRefreshToken([FromBody] GenerateRefreshTokenRequest request)
+        {
+            var result = await _authService.GenerateRefreshToken(request.Token,request.RefreshToken);
+            return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
+        }
+        [HttpPut("revoked-refresh-token")]
+        public async Task<IActionResult> GetRevoked([FromBody] GenerateRefreshTokenRequest request)
+        {
+            var result = await _authService.GetRevoked(request.Token,request.RefreshToken);
+            return result.IsSuccess ? NoContent() : result.ToProblem(400);
+        }
+        [HttpPut("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
+        {
+            var result = await _authService.ConfirmEmail(request.UserId,request.Code);
+            return result.IsSuccess ?  NoContent(): result.ToProblem(400);
+        }
     }
 }
