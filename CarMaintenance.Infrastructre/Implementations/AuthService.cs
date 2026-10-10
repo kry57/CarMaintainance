@@ -5,20 +5,16 @@ using CarMaintenance.Application.DTOs.Response;
 using CarMaintenance.Application.ErrorProvider.UserErrorPrvider;
 using CarMaintenance.Application.Services;
 using CarMaintenance.Application.Services.Auth;
-using CarMaintenance.Domain.Enums;
 using CarMaintenance.Infrastructre.Context;
 using CarMaintenance.Infrastructre.Identity;
 using CarMaintenance.Infrastructre.JWT;
 using CarMaintenance.Infrastructre.Temp;
 using Hangfire;
-using InternalVisibleTo;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Build.Framework;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 
 
@@ -180,6 +176,19 @@ namespace CarMaintenance.Infrastructre.Implementations
           );
                 await _emailService.SendAsync( user.Email!, "CarMaintenance : Email Confirmation", body);
         }
+        public  async Task SendResetpasswordEmail(ApplicationUser user , string code )
+        {
+            var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+            var body = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
+         new Dictionary<string, string>
+         {
+                       { "{{name}}" ,$"{user.FullName}" },
+                       {"{{action_url}}",$"{origin}/auth/ConfirmEmail?userId={user.Id}&Code={code}"}
+         }
+
+          );
+                await _emailService.SendAsync( user.Email!, "CarMaintenance : ForgetPasswordEmailCofirmation", body);
+        }
 
         public async Task<Result> ConfirmEmail(string UserId, string Code)
         {
@@ -209,6 +218,70 @@ namespace CarMaintenance.Infrastructre.Implementations
             var error = validCode.Errors.First();
             return Result.Failure(new Error(error.Code, error.Description));
 
+        }
+
+        public async Task<Result> ResendEmailConfirmation(ResendEmailConfirmationRequest request)
+        {
+            var isEmailExsited = await _userManager.FindByEmailAsync(request.Email);
+            if (isEmailExsited is null)
+                return Result.Success(); // f nas bt3mel kda 3ashan misleading -_-
+            if(isEmailExsited.EmailConfirmed)
+                return Result.Failure(UserError.DuplicatedConfirmation);
+            // generate the code 
+            var verifyCode = await _userManager.GenerateEmailConfirmationTokenAsync(isEmailExsited);
+            var encodeVerifyCode = Encoding.UTF8.GetBytes(verifyCode);
+            var encodeToText = WebEncoders.Base64UrlEncode(encodeVerifyCode);
+            //send a code 
+            BackgroundJob.Enqueue(() => SendEmail(isEmailExsited, encodeToText));
+            _logger.LogInformation("Code : {value}", encodeToText);
+            return Result.Success();
+        }
+
+        public async  Task<Result> ForgetPassword(ForgetPasswordRequest request)
+        {
+            var isEmailExsited = await _userManager.FindByEmailAsync(request.Email);
+            if (isEmailExsited is null)
+                return Result.Success(); // f nas bt3mel kda 3ashan misleading -_-
+            if(!isEmailExsited.EmailConfirmed)
+                return Result.Failure(UserError.ConfirmEmailFrist);
+            // how can i send the code ?? 
+            var decodedCode = await _userManager.GeneratePasswordResetTokenAsync(isEmailExsited);
+            var bytes = Encoding.UTF8.GetBytes(decodedCode);
+            var encodedCode = WebEncoders.Base64UrlEncode(bytes);
+
+            _logger.LogInformation("code : {code}", encodedCode);
+            BackgroundJob.Enqueue(() => SendResetpasswordEmail(isEmailExsited, encodedCode));
+            return Result.Success();
+        }
+
+        public async Task<Result> ResetPassword(ResetPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            
+            if (user is null)
+                return Result.Success();
+
+            if (!user.EmailConfirmed)
+                return Result.Failure(UserError.ConfirmEmailFrist);
+
+            string code;
+            try
+            {
+                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+            }
+            catch (FormatException)
+            {
+                return Result.Failure(UserError.InvaidCredentails);
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
+
+            if (result.Succeeded)
+                return Result.Success();
+
+            var error = result.Errors.First();
+            return Result.Failure(new Error(error.Code, error.Description));
         }
     }
 }

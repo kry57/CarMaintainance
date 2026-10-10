@@ -1,4 +1,5 @@
 ﻿using CarMaintainance.API.Helpers;
+using CarMaintenance.Application.Services.AccountService;
 using CarMaintenance.Domain.Entities;
 using Hangfire;
 using Microsoft.OpenApi;
@@ -112,6 +113,7 @@ namespace CarMaintainance.API
             services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             // HTTP context / current user
             services.AddHttpContextAccessor();

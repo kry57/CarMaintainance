@@ -36,6 +36,8 @@ namespace CarMaintenance.Infrastructre.Mapping
                 RefreshTokenExpiryDays = src.RefreshTokenExpiryDays
 
             });
+            CreateMap<ApplicationUser, AccountResponse>();
+            CreateMap<UpdateMyProfileRequest, ApplicationUser>();
 
         }
         

@@ -12,6 +12,9 @@ namespace CarMaintenance.Application.Services.Auth
         Task<Result<SignInResponse>> GenerateRefreshToken(string token , string refreshToken);
         Task<Result> GetRevoked(string token , string refreshToken);
         Task<Result> ConfirmEmail(string UserId, string Code);
+        Task<Result> ResendEmailConfirmation(ResendEmailConfirmationRequest request);
+        Task<Result> ForgetPassword(ForgetPasswordRequest request);
+        Task<Result> ResetPassword(ResetPasswordRequest request);
 
     }
 }

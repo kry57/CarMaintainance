@@ -61,5 +61,24 @@ namespace CarMaintainance.API.Controllers
             var result = await _authService.ConfirmEmail(request.UserId,request.Code);
             return result.IsSuccess ?  NoContent(): result.ToProblem(400);
         }
+        [HttpPut("resend-email-confirmation")]
+        public async Task<IActionResult> ResendEmailConfirmation([FromBody] ResendEmailConfirmationRequest request)
+        {
+            var result = await _authService.ResendEmailConfirmation(request);
+            return result.IsSuccess ?  NoContent(): result.ToProblem(400);
+        }
+        [HttpPut("forget-password")]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordRequest request)
+        {
+            var result = await _authService.ForgetPassword(request);
+            return result.IsSuccess ?  NoContent(): result.ToProblem(400);
+        }
+        
+        [HttpPut("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _authService.ResetPassword(request);
+            return result.IsSuccess ?  NoContent(): result.ToProblem(400);
+        }
     }
 }
