@@ -3,11 +3,10 @@ using AutoMapper.QueryableExtensions;
 using CarMaintenance.Application.Abstractions;
 using CarMaintenance.Application.DTOs.Request;
 using CarMaintenance.Application.DTOs.Response;
-using CarMaintenance.Application.ErrorProvider.CarErrorProvider;
 using CarMaintenance.Application.ErrorProvider.UserErrorPrvider;
 using CarMaintenance.Application.Services.User;
-using CarMaintenance.Infrastructre.Identity;
 using Microsoft.AspNetCore.Identity;
+using CarMaintenance.Infrastructre.Identity;
 
 namespace CarMaintenance.Infrastructre.Implementations
 {
@@ -53,6 +52,21 @@ namespace CarMaintenance.Infrastructre.Implementations
             return user is null
                 ? Result<UserResponse>.Failure(UserError.NotFoundUser)
                 : Result<UserResponse>.Success(user);
+        }
+
+        public async Task<Result> Unlock(string id)
+        {
+            if (await _userManager.FindByIdAsync(id) is not { } user)
+                return Result.Failure(UserError.NotFoundUser);
+            if (!user.LockoutEnabled)
+                return Result.Failure(UserError.UnEnabled);
+            if (user.LockoutEnd < DateTime.UtcNow || user.LockoutEnd is null)
+                return Result.Failure(UserError.Free);
+            var result = await _userManager.SetLockoutEndDateAsync(user, null);
+            if (result.Succeeded)
+                return Result.Failure(UserError.NotUnlocked);
+
+            return Result.Success();
         }
 
         public async Task<Result> UpdateAsync(string userId, UpdateMyProfileRequest request)
