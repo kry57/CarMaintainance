@@ -4,6 +4,7 @@ using CarMaintenance.Application.DTOs.Response;
 using CarMaintenance.Infrastructre.Identity;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace CarMaintenance.Infrastructre.Mapping
@@ -14,6 +15,10 @@ namespace CarMaintenance.Infrastructre.Mapping
             public ApplicaionUserMapped()
             {
 
+            CreateMap<UserRequest, ApplicationUser>().
+                ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName));
+            CreateMap<ApplicationUser, UserResponse>();
             CreateMap<RegisterRequest, ApplicationUser>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
             CreateMap<(ApplicationUser User, string Token, int ExpiresIn), RegisterResponse>()
                 .ConstructUsing(src => new RegisterResponse

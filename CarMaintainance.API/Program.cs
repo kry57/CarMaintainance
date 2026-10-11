@@ -31,7 +31,8 @@ namespace CarMaintainance.API
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerDocumentation();
-            
+            builder.Services.AddHttpClient();
+
 
             builder.Services
                 .AddControllers()
@@ -75,6 +76,7 @@ namespace CarMaintainance.API
                     DashboardTitle = "Car Maintenance Jobs"
                 });
             }
+
             app.UseSerilogRequestLogging();
 
             app.UseExceptionHandler();

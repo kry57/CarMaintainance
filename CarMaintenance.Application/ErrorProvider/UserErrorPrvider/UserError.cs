@@ -14,5 +14,8 @@ namespace CarMaintenance.Application.ErrorProvider.UserErrorPrvider
         public readonly static Error InvaidCredentails = new("User.InvaidCredentails", "Wrong Email/Password !");
         public readonly static Error DuplicatedConfirmation = new("User.DuplicatedConfirmation", "Confirmed  Before !");
         public readonly static Error ConfirmEmailFrist = new("User.ConfirmEmailFrist", "Confirme! the email then continue .");
+        public readonly static Error UnEnabled = new("User.UnEnabled", "this feature not enabled !");
+        public readonly static Error Free = new("User.Free", "already free !");
+        public readonly static Error NotUnlocked = new("User.NotUnlocked", "un lockd now ");
     }
 }

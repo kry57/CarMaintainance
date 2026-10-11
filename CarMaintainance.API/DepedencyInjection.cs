@@ -1,9 +1,7 @@
 ﻿using CarMaintainance.API.Helpers;
 using CarMaintenance.Application.Services.AccountService;
-using CarMaintenance.Domain.Entities;
+using CarMaintenance.Application.Services.User;
 using Hangfire;
-using Microsoft.OpenApi;
-using Scalar.AspNetCore;
 
 
 namespace CarMaintainance.API
@@ -107,6 +105,7 @@ namespace CarMaintainance.API
             services.AddScoped<IProviderCategoryTypesRepository, ProviderCategoryRepository>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<ISubscriptionExpiryJob, SubscriptionExpiryJob>();
+            services.AddScoped<OllamaEmbeddingService>();
 
             // Services
             services.AddScoped<IProviderService, ProviderService>();
@@ -114,6 +113,8 @@ namespace CarMaintainance.API
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICarFaultDiagnosisService, CarFaultDiagnosisService>();
 
             // HTTP context / current user
             services.AddHttpContextAccessor();
@@ -159,6 +160,8 @@ namespace CarMaintainance.API
             services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SectionName));
             services.Configure<JWTOptions>(configuration.GetSection(JWTOptions.SectionName));
             services.Configure<MailSettings>(configuration.GetSection(JWTOptions.SectionName));
+            services.Configure<OllamaOptions>(configuration.GetSection("Ollama"));
+            services.Configure<OllamaOptions>(configuration.GetSection("CarFaults"));
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
