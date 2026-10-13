@@ -2,7 +2,7 @@
 
 namespace CarMaintenance.Infrastructre.Context
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser,ApplicationRole,string>
     {
         private readonly IHttpContextAccessor _httpContextAccessor; 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options , IHttpContextAccessor httpContextAccessor)
@@ -14,14 +14,7 @@ namespace CarMaintenance.Infrastructre.Context
         {
             base.OnModelCreating(builder);
             /*Assembelies*/
-            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationUserEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(ProviderEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(ProductEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(ProviderCategoryTypeEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(SubscriptionEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(RegistrationRequestEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(CarEntityType).Assembly);
-            builder.ApplyConfigurationsFromAssembly(typeof(ReviewEntityType).Assembly);
+            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             /*Change FK Behaviour*/
             var cascadeFks = builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()).Where(e => e.DeleteBehavior == DeleteBehavior.Cascade && !e.IsOwnership);
             foreach(var fk in cascadeFks)

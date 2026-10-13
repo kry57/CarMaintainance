@@ -35,7 +35,7 @@ namespace CarMaintainance.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var result = await _authService.RegisterAsync(request);
-            return result.IsSuccess ? Ok(result.ValueOuter) : result.ToProblem(400);
+            return result.IsSuccess ? Ok() : result.ToProblem(400);
         }
         [HttpPost("login")]
         public async Task<IActionResult> LogIn([FromBody] SignInRequest request)

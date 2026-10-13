@@ -6,7 +6,7 @@ namespace CarMaintainance.API.Controllers
 {
     [Route("api/[controller]/{providerId}")]
     [ApiController]
-   // [Authorize]
+   [Authorize]
     public class ReviewController(IUnitOfWork unitOfWork): ControllerBase
     {
 

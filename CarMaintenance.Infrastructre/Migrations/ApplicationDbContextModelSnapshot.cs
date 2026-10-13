@@ -412,6 +412,68 @@ namespace CarMaintenance.Infrastructre.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("CarMaintenance.Infrastructre.Identity.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "A5066782-F090-4C8E-9372-77BB4F6A5D2D",
+                            ConcurrencyStamp = "3BB4708A-19D7-4C76-BD01-D5109374B291",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC",
+                            ConcurrencyStamp = "F4FA1400-6AF3-4E5A-8F25-88CA5C3C3006",
+                            IsDefault = false,
+                            IsDeleted = false,
+                            Name = "Provider",
+                            NormalizedName = "PROVIDER"
+                        },
+                        new
+                        {
+                            Id = "352AB560-5ADB-4A2A-A768-E206124E8F70",
+                            ConcurrencyStamp = "63557FE8-153A-4E20-B2CD-44FDDE734E10",
+                            IsDefault = true,
+                            IsDeleted = false,
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
+                        });
+                });
+
             modelBuilder.Entity("CarMaintenance.Infrastructre.Identity.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -469,9 +531,6 @@ namespace CarMaintenance.Infrastructre.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("UserRole")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -483,33 +542,42 @@ namespace CarMaintenance.Infrastructre.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.HasData(
+                        new
+                        {
+                            Id = "32482AA6-8A0F-4C69-90D8-E89ECCC8A770",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2A3C06F8-D0A2-4781-9FD7-AA0B89B5172A",
+                            Email = "admin@carmaintenance.com",
+                            EmailConfirmed = true,
+                            FullName = "Admin-Carmaintenance",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@CARMAINTENANCE.COM",
+                            NormalizedUserName = "ADMIN@CARMAINTENANCE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA2FOQ15UfM60fGLSlLCbMm0WZJE15VGafGBtQQKFx0FYLMe9ExpWE73eheiqk+xGw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "E2BAF3A1EDB74ABB8E1D28E3FB795B18",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@carmaintenance.com"
+                        },
+                        new
+                        {
+                            Id = "B6FA1294-88A6-446C-9AF3-3185D043FF2A",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "F2E6B77B-75E7-4055-BF5F-0A5403E34FC5",
+                            Email = "bydprovider@carmaintenance.com",
+                            EmailConfirmed = true,
+                            FullName = "Provider-Carmaintenance",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "BYDPROVIDER@CARMAINTENANCE.COM",
+                            NormalizedUserName = "BYDPROVIDER@CARMAINTENANCE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA2FOQ15UfM60fGLSlLCbMm0WZJE15VGafGBtQQKFx0FYLMe9ExpWE73eheiqk+xGw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "0318D273BF28464984D3460300D57575",
+                            TwoFactorEnabled = false,
+                            UserName = "bydprovider@carmaintenance.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -535,6 +603,547 @@ namespace CarMaintenance.Infrastructre.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "Permissions",
+                            ClaimValue = "Permissions",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "Permissions",
+                            ClaimValue = "account:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "Permissions",
+                            ClaimValue = "account:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "Permissions",
+                            ClaimValue = "account:change-password",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:delete",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:toggle-status",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ClaimType = "Permissions",
+                            ClaimValue = "diagnosis:use",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:delete",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:toggle-status",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:delete",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:delete",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:toggle-status",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:verify",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            ClaimType = "Permissions",
+                            ClaimValue = "registration-requests:view-provider",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            ClaimType = "Permissions",
+                            ClaimValue = "registration-requests:respond",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:delete",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:toggle-status",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:cancel",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:renew",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:upgrade",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:downgrade",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            ClaimType = "Permissions",
+                            ClaimValue = "users:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:view",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:add",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:update",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:delete",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            ClaimType = "Permissions",
+                            ClaimValue = "roles:toggle-status",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:view",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:add",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:update",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:delete",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:toggle-status",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:view",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:add",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:delete",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:view",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:update",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            ClaimType = "Permissions",
+                            ClaimValue = "registration-requests:view-provider",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            ClaimType = "Permissions",
+                            ClaimValue = "registration-requests:respond",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:view",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:add",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:cancel",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:renew",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:upgrade",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            ClaimType = "Permissions",
+                            ClaimValue = "subscriptions:downgrade",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:view",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:view",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:add",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:update",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 68,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:delete",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 69,
+                            ClaimType = "Permissions",
+                            ClaimValue = "cars:toggle-status",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            ClaimType = "Permissions",
+                            ClaimValue = "diagnosis:use",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 71,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:view",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 72,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:add",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 73,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:update",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 74,
+                            ClaimType = "Permissions",
+                            ClaimValue = "reviews:delete",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 75,
+                            ClaimType = "Permissions",
+                            ClaimValue = "products:view",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 76,
+                            ClaimType = "Permissions",
+                            ClaimValue = "product-images:view",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        },
+                        new
+                        {
+                            Id = 77,
+                            ClaimType = "Permissions",
+                            ClaimValue = "providers:view",
+                            RoleId = "352AB560-5ADB-4A2A-A768-E206124E8F70"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -597,6 +1206,18 @@ namespace CarMaintenance.Infrastructre.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "32482AA6-8A0F-4C69-90D8-E89ECCC8A770",
+                            RoleId = "A5066782-F090-4C8E-9372-77BB4F6A5D2D"
+                        },
+                        new
+                        {
+                            UserId = "B6FA1294-88A6-446C-9AF3-3185D043FF2A",
+                            RoleId = "0FC0730C-FCF7-4514-8ED8-27CB4B232FFC"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -753,7 +1374,7 @@ namespace CarMaintenance.Infrastructre.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("CarMaintenance.Infrastructre.Identity.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -780,7 +1401,7 @@ namespace CarMaintenance.Infrastructre.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("CarMaintenance.Infrastructre.Identity.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)

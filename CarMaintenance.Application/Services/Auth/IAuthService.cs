@@ -7,7 +7,7 @@ namespace CarMaintenance.Application.Services.Auth
 {
     public interface IAuthService
     {
-        Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request);
+        Task<Result> RegisterAsync(RegisterRequest request);
         Task<Result<SignInResponse>> LogInAsync(SignInRequest request);
         Task<Result<SignInResponse>> GenerateRefreshToken(string token , string refreshToken);
         Task<Result> GetRevoked(string token , string refreshToken);

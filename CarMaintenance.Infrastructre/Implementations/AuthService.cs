@@ -8,13 +8,13 @@ using CarMaintenance.Application.Services.Auth;
 using CarMaintenance.Infrastructre.Context;
 using CarMaintenance.Infrastructre.Identity;
 using CarMaintenance.Infrastructre.JWT;
+using CarMaintenance.Infrastructre.Seeding;
 using CarMaintenance.Infrastructre.Temp;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
-using System.Security.Principal;
 using System.Text;
 
 
@@ -51,7 +51,16 @@ namespace CarMaintenance.Infrastructre.Implementations
             var result  = await _signInManager.CheckPasswordSignInAsync(isEmailExsited, request.Password, true);
             if (result.Succeeded)
             {
-                var (token, expiresIn) = _jWTService.GenerateToken(isEmailExsited);
+                var userRoles = await _userManager.GetRolesAsync(isEmailExsited);
+                var roleClaims = await (
+                    from r in _context.Roles
+                    join p in _context.RoleClaims on r.Id equals p.RoleId
+                    where userRoles.Contains(r.Name!) && p.ClaimType == Permissions.Type
+                     select p.ClaimValue
+                        ).Distinct().ToListAsync();
+
+
+                var (token, expiresIn) = _jWTService.GenerateToken(isEmailExsited,userRoles, roleClaims!);
                 var refreshToken = GenerateRefreshToken();
 
                 isEmailExsited.RefreshTokens.Add(new RefreshToken
@@ -70,16 +79,16 @@ namespace CarMaintenance.Infrastructre.Implementations
 
         }
 
-        public async Task<Result<RegisterResponse>> RegisterAsync(RegisterRequest request)
+        public async Task<Result> RegisterAsync(RegisterRequest request)
         {
             var isEmailExsited = await _userManager.FindByEmailAsync(request.Email);
             if (isEmailExsited is not null )
-                return Result<RegisterResponse>.Failure(UserError.DuplicatedUser);
+                return Result.Failure(UserError.DuplicatedUser);
             var user = _mapper.Map<ApplicationUser>(request);
             var result = await _userManager.CreateAsync(user, request.Password);
             if(result.Succeeded)
             {
-                var (token, expiresIn) = _jWTService.GenerateToken(user);
+                
                 // generate a code 
                 var verifyCode =  await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var encodeVerifyCode = Encoding.UTF8.GetBytes(verifyCode);
@@ -88,8 +97,8 @@ namespace CarMaintenance.Infrastructre.Implementations
                 BackgroundJob.Enqueue(() => SendEmail(user, encodeToText));
                 _logger.LogInformation("Code : {value}", encodeToText);
 
-                var response = _mapper.Map<RegisterResponse>((user, token, expiresIn * 60 ));
-                return Result<RegisterResponse>.Success(response);
+                
+                return Result.Success();
             }
 
             var error = result.Errors.First();
@@ -116,7 +125,15 @@ namespace CarMaintenance.Infrastructre.Implementations
             if( userRefreshToken is null || !userRefreshToken.IsActive)
                 return Result<SignInResponse>.Failure(UserError.NotFoundUser);
 
-            var (newToken , expiresIn) = _jWTService.GenerateToken(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var roleClaims = await _context.Roles.Join(
+                _context.RoleClaims, role => role.Id, claim => claim.RoleId, (role, Claim) => new { role, Claim }).
+                Where(a => userRoles.Contains(a.role.Name!)).Select(a => a.Claim.ClaimValue).
+              ToListAsync();
+
+
+            var (newToken, expiresIn) = _jWTService.GenerateToken(user, userRoles, roleClaims!);
+
             var newRefreshToken = GenerateRefreshToken();
 
 
@@ -213,6 +230,7 @@ namespace CarMaintenance.Infrastructre.Implementations
             var validCode = await _userManager.ConfirmEmailAsync(isUserIdExsited, text);
             if (validCode.Succeeded)
             {
+                await _userManager.AddToRoleAsync(isUserIdExsited, DefaultRole.Member);
                 return Result.Success();
             }
             var error = validCode.Errors.First();

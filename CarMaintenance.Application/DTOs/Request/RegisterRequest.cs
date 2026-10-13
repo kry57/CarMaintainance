@@ -8,8 +8,11 @@ namespace CarMaintenance.Application.DTOs.Request
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        public string FullName { get; set; }
-        public UserRole UserRole = UserRole.Customer;
+        [Required]
+        [MinLength(3)]
+        [MaxLength(50)]
+        public string FullName { get; set; } = string.Empty;
+
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }

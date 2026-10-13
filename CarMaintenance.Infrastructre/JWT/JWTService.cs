@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json;
 
 namespace CarMaintenance.Infrastructre.JWT
 {
@@ -11,16 +12,17 @@ namespace CarMaintenance.Infrastructre.JWT
     {
         private readonly IOptions<JWTOptions> _option = option;
 
-        public (string token, int expiresIn) GenerateToken(ApplicationUser user)
+        public (string token, int expiresIn) GenerateToken(ApplicationUser user, IEnumerable<string> Roles, IEnumerable<string> Permissions)
         {
             // Cliams 
-            Claim[] claims = [
-                new Claim(JwtRegisteredClaimNames.Sub,user.Id),
-                new Claim(JwtRegisteredClaimNames.Email,user.Email!),
-                new Claim(JwtRegisteredClaimNames.FamilyName,user.FullName),
-                new Claim(JwtRegisteredClaimNames.Jti ,Guid.NewGuid().ToString() )
-
-                ];
+        Claim[] claims = [
+        new(JwtRegisteredClaimNames.Sub, user.Id),
+        new(JwtRegisteredClaimNames.Email, user.Email!),
+        new(JwtRegisteredClaimNames.FamilyName, user.FullName),
+        new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new(nameof(Roles), JsonSerializer.Serialize(Roles), JsonClaimValueTypes.JsonArray),
+        new(nameof(Permissions), JsonSerializer.Serialize(Permissions), JsonClaimValueTypes.JsonArray)
+    ];
 
             var symmSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_option.Value.Key));
 

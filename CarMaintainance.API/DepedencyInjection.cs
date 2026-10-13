@@ -17,7 +17,7 @@ namespace CarMaintainance.API
         }
         public static IServiceCollection AddIdentityAndStoresHandMade(this IServiceCollection services)
         {
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
              .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
